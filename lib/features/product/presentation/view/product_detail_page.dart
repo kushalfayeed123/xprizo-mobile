@@ -11,7 +11,6 @@ import 'package:xprizo_mobile/features/product/data/models/product_model.dart';
 import 'package:xprizo_mobile/features/product/presentation/bloc/product_bloc.dart';
 import 'package:xprizo_mobile/features/product/presentation/bloc/product_event.dart';
 import 'package:xprizo_mobile/features/product/presentation/bloc/product_state.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailPage extends StatefulWidget {
   const ProductDetailPage({required this.product, super.key});
@@ -71,7 +70,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   void _handlePaymentCallback(String status, String reference) {
     if (!mounted) return;
 
-    showDialog(
+    showDialog<PaymentStatusDialog>(
       context: context,
       barrierDismissible: false,
       builder: (context) => PaymentStatusDialog(
@@ -100,7 +99,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
       // Launch WebView for payment
       if (!mounted) return;
-      await showDialog(
+      await showDialog<Dialog>(
         context: context,
         barrierDismissible: false,
         builder: (context) => Dialog(
@@ -228,7 +227,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '${product.currencyCode} ${product.amount.toStringAsFixed(2)}',
+                      '${product.currencyCode} '
+                      '${product.amount.toStringAsFixed(2)}',
                       style: TextStyle(
                         fontSize: 22,
                         color: Colors.green.shade700,

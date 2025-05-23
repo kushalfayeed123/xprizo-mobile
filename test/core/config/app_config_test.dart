@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:xprizo_mobile/core/config/app_config.dart';
 
@@ -34,7 +34,7 @@ void main() {
       const newKey = 'new-api-key';
       when(() => mockStorage.write(
           key: any(named: 'key'),
-          value: any(named: 'value'))).thenAnswer((_) async {});
+          value: any(named: 'value'),),).thenAnswer((_) async {});
 
       await AppConfig.setApiKey(newKey);
       verify(() => mockStorage.write(key: any(named: 'key'), value: newKey))
@@ -44,7 +44,6 @@ void main() {
     test('clearApiKey deletes the stored key', () async {
       when(() => mockStorage.delete(key: any(named: 'key')))
           .thenAnswer((_) async {});
-
       await AppConfig.clearApiKey();
       verify(() => mockStorage.delete(key: any(named: 'key'))).called(1);
     });

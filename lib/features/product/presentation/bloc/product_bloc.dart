@@ -229,7 +229,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         );
 
         // Simulate network delay
-        await Future.delayed(const Duration(milliseconds: 500));
+        await Future<void>.delayed(const Duration(milliseconds: 500));
 
         final nextPage = currentState.currentPage + 1;
         final displayed = _getPage(
@@ -242,7 +242,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           currentState.copyWith(
             displayedProducts: displayed,
             currentPage: nextPage,
-            message: null, // Clear loading message
           ),
         );
       }

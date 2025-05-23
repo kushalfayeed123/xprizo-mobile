@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class PaymentStatusDialog extends StatelessWidget {
   const PaymentStatusDialog({
-    super.key,
     required this.status,
     required this.reference,
     required this.onOkPressed,
+    super.key,
   });
 
   final String status;

@@ -11,7 +11,7 @@ class LoadingOverlay extends StatelessWidget {
     return BlocBuilder<ProductBloc, ProductState>(
       builder: (context, state) {
         if (state is ProductLoading) {
-          return Container(
+          return ColoredBox(
             color: Colors.black.withOpacity(0.1),
             child: const Center(
               child: CircularProgressIndicator(),

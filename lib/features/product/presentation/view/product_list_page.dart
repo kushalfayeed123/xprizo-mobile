@@ -193,7 +193,8 @@ class _ProductListPageState extends State<ProductListPage> {
                                         const CircularProgressIndicator(
                                           valueColor:
                                               AlwaysStoppedAnimation<Color>(
-                                                  Colors.blue),
+                                            Colors.blue,
+                                          ),
                                         ),
                                         const SizedBox(height: 8),
                                         Text(
@@ -250,7 +251,9 @@ class _ProductListPageState extends State<ProductListPage> {
                     label: const Text('Retry'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

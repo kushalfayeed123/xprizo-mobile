@@ -104,7 +104,8 @@ class _AddProductPageState extends State<AddProductPage> {
                           suffixText: 'EUR',
                         ),
                         keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true),
+                          decimal: true,
+                        ),
                         validator: (value) =>
                             value == null || double.tryParse(value) == null
                                 ? 'Enter valid amount'
@@ -123,7 +124,8 @@ class _AddProductPageState extends State<AddProductPage> {
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      Colors.white),
+                                    Colors.white,
+                                  ),
                                 ),
                               )
                             : const Icon(Icons.add_circle_outline),

@@ -74,8 +74,8 @@ class App extends StatelessWidget {
         title: 'Xprizo Products',
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Stack(
-          children: const [
+        home: const Stack(
+          children: [
             ProductListPage(),
             LoadingOverlay(),
           ],
