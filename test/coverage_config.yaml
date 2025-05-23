@@ -1,0 +1,12 @@
+coverage:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+    - "lib/generated/**"
+    - "lib/l10n/**"
+  html:
+    directory: coverage/html
+  lcov:
+    directory: coverage
+    reportFile: lcov.info 
