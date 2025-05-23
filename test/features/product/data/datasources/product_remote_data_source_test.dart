@@ -14,10 +14,11 @@ class MockApiClient extends Mock implements ApiClient {}
 void main() {
   late ProductRemoteDataSource dataSource;
   late MockApiClient mockClient;
+  const redirectUrl = 'myapp://payment-callback';
 
   setUp(() {
     mockClient = MockApiClient();
-    dataSource = ProductRemoteDataSource(mockClient);
+    dataSource = ProductRemoteDataSource(mockClient, redirectUrl: redirectUrl);
   });
 
   group('fetchProductList', () {
@@ -126,21 +127,29 @@ void main() {
   group('setRedirectUrl', () {
     test('successfully sets redirect URL', () async {
       // Arrange
-      when(() => mockClient.post('/Item/SetRedirectLink/1', body: any()))
-          .thenAnswer((_) async => http.Response('', 200));
+      when(
+        () => mockClient.put(
+          '/Item/SetRedirectLink/1',
+          params: {'value': redirectUrl},
+        ),
+      ).thenAnswer((_) async => http.Response('', 200));
 
       // Act
       await dataSource.setRedirectUrl(1);
 
       // Assert
-      verify(() => mockClient.post('/Item/SetRedirectLink/1', body: any()))
-          .called(1);
+      verify(() => mockClient.put(
+            '/Item/SetRedirectLink/1',
+            params: {'value': redirectUrl},
+          )).called(1);
     });
 
     test('throws exception when API call fails', () async {
       // Arrange
-      when(() => mockClient.post('/Item/SetRedirectLink/1', body: any()))
-          .thenThrow(Exception('Network error'));
+      when(() => mockClient.put(
+            '/Item/SetRedirectLink/1',
+            params: {'value': redirectUrl},
+          )).thenThrow(Exception('Network error'));
 
       // Act & Assert
       expect(

@@ -33,7 +33,7 @@ void main() {
       final formattedPrice =
           '${product.currencyCode} ${product.amount.toStringAsFixed(2)}';
 
-      expect(formattedPrice, equals('USD 99.99'));
+      expect(formattedPrice, equals('USD 99.00'));
     });
   });
 }

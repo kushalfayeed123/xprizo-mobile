@@ -24,7 +24,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final AppLinks _appLinks = AppLinks();
   StreamSubscription<dynamic>? _sub;
   String? _paymentStatus;
-  bool _isLoading = false;
+  final _isLoading = false;
   WebViewController? _webViewController;
 
   @override

@@ -8,15 +8,29 @@ class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 void main() {
   late MockFlutterSecureStorage mockStorage;
 
+  setUpAll(() {
+    // Register fallback value for any() matcher
+    registerFallbackValue('');
+  });
+
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
+    // Set up the mock storage in AppConfig
+    AppConfig.setStorage(mockStorage);
+
+    // Mock all storage methods with proper named parameters
+    when(() => mockStorage.read(key: any(named: 'key')))
+        .thenAnswer((_) async => null);
+    when(() => mockStorage.write(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+        )).thenAnswer((_) async {});
+    when(() => mockStorage.delete(key: any(named: 'key')))
+        .thenAnswer((_) async {});
   });
 
   group('AppConfig', () {
     test('getApiKey returns null when no key is stored', () async {
-      when(() => mockStorage.read(key: any(named: 'key')))
-          .thenAnswer((_) async => null);
-
       final apiKey = await AppConfig.getApiKey();
       expect(apiKey, isNull);
     });
@@ -32,18 +46,14 @@ void main() {
 
     test('setApiKey stores the key', () async {
       const newKey = 'new-api-key';
-      when(() => mockStorage.write(
-          key: any(named: 'key'),
-          value: any(named: 'value'),),).thenAnswer((_) async {});
-
       await AppConfig.setApiKey(newKey);
-      verify(() => mockStorage.write(key: any(named: 'key'), value: newKey))
-          .called(1);
+      verify(() => mockStorage.write(
+            key: any(named: 'key'),
+            value: newKey,
+          )).called(1);
     });
 
     test('clearApiKey deletes the stored key', () async {
-      when(() => mockStorage.delete(key: any(named: 'key')))
-          .thenAnswer((_) async {});
       await AppConfig.clearApiKey();
       verify(() => mockStorage.delete(key: any(named: 'key'))).called(1);
     });

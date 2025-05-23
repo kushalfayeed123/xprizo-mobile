@@ -47,7 +47,7 @@ extension WidgetTesterExtension on WidgetTester {
 /// Mock data for testing
 class MockData {
   static List<ProductModel> get mockProducts => [
-        createMockProduct(id: 1),
+        createMockProduct(),
         createMockProduct(id: 2),
         createMockProduct(id: 3),
       ];

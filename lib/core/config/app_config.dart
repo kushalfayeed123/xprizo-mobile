@@ -3,9 +3,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AppConfig {
-  static const _apiKeyKey = 'api_key';
-  static const _storage = FlutterSecureStorage();
   static bool _isInitialized = false;
+  static const _apiKeyKey = 'api_key';
+  static FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+  // App configuration
+  static const String redirectUrl = 'myapp://payment-callback';
 
   static Future<void> initialize() async {
     if (!_isInitialized) {
@@ -16,7 +19,9 @@ class AppConfig {
         // Load environment variables
         await dotenv.load();
       } catch (e) {
-        rethrow;
+        debugPrint(
+            'AppConfig: Warning: .env file not found or error loading: $e');
+        // Continue without .env file
       }
       _isInitialized = true;
     }
@@ -33,34 +38,24 @@ class AppConfig {
     }
   }
 
-  static Future<String> getApiKey() async {
+  static Future<String?> getApiKey() async {
     if (!_isInitialized) {
       await initialize();
     }
-
-    try {
-      final apiKey = await _storage.read(key: _apiKeyKey);
-
-      if (apiKey == null) {
-        throw Exception('API key not found in secure storage');
-      }
-      return apiKey;
-    } catch (e) {
-      rethrow;
-    }
+    final storedKey = await _storage.read(key: _apiKeyKey);
+    return storedKey;
   }
 
-  static Future<void> setApiKey(String apiKey) async {
-    if (!_isInitialized) {
-      await initialize();
-    }
-    await _storage.write(key: _apiKeyKey, value: apiKey);
+  static Future<void> setApiKey(String key) async {
+    await _storage.write(key: _apiKeyKey, value: key);
   }
 
   static Future<void> clearApiKey() async {
-    if (!_isInitialized) {
-      await initialize();
-    }
     await _storage.delete(key: _apiKeyKey);
+  }
+
+  // For testing purposes
+  static void setStorage(FlutterSecureStorage storage) {
+    _storage = storage;
   }
 }

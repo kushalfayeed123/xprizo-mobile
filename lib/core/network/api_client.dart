@@ -1,20 +1,32 @@
 import 'dart:async';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:xprizo_mobile/core/config/app_config.dart';
 import 'package:xprizo_mobile/core/network/api_endpoints.dart';
 
 class ApiClient {
-  ApiClient._(this._baseUrl);
+  ApiClient._(this._baseUrl,
+      [http.Client? client, FlutterSecureStorage? storage])
+      : _client = client ?? http.Client(),
+        _storage = storage ?? const FlutterSecureStorage();
   static ApiClient? _instance;
   static bool _isInitializing = false;
   static Completer<void>? _initCompleter;
   final String _baseUrl;
+  final http.Client _client;
+  final FlutterSecureStorage _storage;
   String? _apiKey;
 
-  static Future<ApiClient> create() async {
+  static Future<ApiClient> create({
+    http.Client? client,
+    FlutterSecureStorage? storage,
+  }) async {
     if (_instance == null) {
-      _instance = ApiClient._(ApiEndpoints.baseUrl);
+      // Ensure Flutter bindings are initialized
+      WidgetsFlutterBinding.ensureInitialized();
+      _instance = ApiClient._(ApiEndpoints.baseUrl, client, storage);
       await _instance!._initialize();
     }
     return _instance!;
@@ -32,11 +44,14 @@ class ApiClient {
     _initCompleter = Completer<void>();
 
     try {
-      _apiKey = await AppConfig.getApiKey();
+      _apiKey = await _storage.read(key: 'api_key');
+      if (_apiKey == null) {
+        throw Exception('API key not found');
+      }
       _initCompleter?.complete();
     } catch (e) {
       _initCompleter?.completeError(e);
-      rethrow;
+      // Don't rethrow here, let the completer handle the error
     } finally {
       _isInitializing = false;
       _initCompleter = null;
@@ -64,7 +79,10 @@ class ApiClient {
     if (queryParameters != null) {
       uri = uri.replace(queryParameters: queryParameters);
     }
-    final response = await http.get(uri, headers: _withApiKey(headers));
+    final response = await _client.get(uri, headers: _withApiKey(headers));
+    if (response.statusCode >= 400) {
+      throw Exception('HTTP Error: ${response.statusCode}');
+    }
     return response;
   }
 
@@ -74,11 +92,14 @@ class ApiClient {
     Object? body,
   }) async {
     final uri = Uri.parse('$_baseUrl$path');
-    final response = await http.post(
+    final response = await _client.post(
       uri,
       headers: _withApiKey(headers),
       body: jsonEncode(body),
     );
+    if (response.statusCode >= 400) {
+      throw Exception('HTTP Error: ${response.statusCode}');
+    }
     return response;
   }
 
@@ -95,11 +116,24 @@ class ApiClient {
       uri = uri.replace(queryParameters: params);
     }
 
-    final response = await http.put(
+    final response = await _client.put(
       uri,
       headers: _withApiKey(headers),
       body: body != null ? jsonEncode(body) : null,
     );
+    if (response.statusCode >= 400) {
+      throw Exception('HTTP Error: ${response.statusCode}');
+    }
     return response;
   }
+
+// for testing purposes
+  @visibleForTesting
+  set apiKey(String? key) => _apiKey = key;
+
+  @visibleForTesting
+  String? get apiKey => _apiKey;
+
+  @visibleForTesting
+  static set instance(ApiClient? value) => _instance = value;
 }

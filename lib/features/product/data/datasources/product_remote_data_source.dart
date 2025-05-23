@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:xprizo_mobile/core/network/api_client.dart';
 import 'package:xprizo_mobile/core/network/api_endpoints.dart';
 import 'package:xprizo_mobile/core/network/http_response_handler.dart';
@@ -8,10 +6,9 @@ import 'package:xprizo_mobile/features/product/data/models/add_product_request_m
 import 'package:xprizo_mobile/features/product/data/models/product_model.dart';
 
 class ProductRemoteDataSource {
-  ProductRemoteDataSource(this.client);
+  ProductRemoteDataSource(this.client, {required this.redirectUrl});
   final ApiClient client;
-
-  String redirectUrl = 'myapp://payment-callback';
+  final String redirectUrl;
 
   static const _errorMap = {
     400: ProductValidationException(message: 'Invalid request data'),
@@ -94,9 +91,9 @@ class ProductRemoteDataSource {
 
   Future<void> setRedirectUrl(int id) async {
     try {
-      final response = await client.post(
+      final response = await client.put(
         ApiEndpoints.setRedirectLinkForProduct(id),
-        body: {'redirectUrl': redirectUrl},
+        params: {'value': redirectUrl},
       );
 
       HttpResponseHandler.handleEmptyResponse(
