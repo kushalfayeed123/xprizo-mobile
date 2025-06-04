@@ -7,9 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:xprizo_mobile/core/network/api_endpoints.dart';
 
 class ApiClient {
-  ApiClient._(this._baseUrl,
-      [http.Client? client, FlutterSecureStorage? storage])
-      : _client = client ?? http.Client(),
+  ApiClient(
+    this._baseUrl, [
+    http.Client? client,
+    FlutterSecureStorage? storage,
+  ])  : _client = client ?? http.Client(),
         _storage = storage ?? const FlutterSecureStorage();
   static ApiClient? _instance;
   static bool _isInitializing = false;
@@ -26,7 +28,7 @@ class ApiClient {
     if (_instance == null) {
       // Ensure Flutter bindings are initialized
       WidgetsFlutterBinding.ensureInitialized();
-      _instance = ApiClient._(ApiEndpoints.baseUrl, client, storage);
+      _instance = ApiClient(ApiEndpoints.baseUrl, client, storage);
       await _instance!._initialize();
     }
     return _instance!;

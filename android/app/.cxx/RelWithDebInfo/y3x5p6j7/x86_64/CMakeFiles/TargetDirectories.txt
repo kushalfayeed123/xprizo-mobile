@@ -1,0 +1,2 @@
+C:/sandbox/xprizo_mobile/android/app/.cxx/RelWithDebInfo/y3x5p6j7/x86_64/CMakeFiles/edit_cache.dir
+C:/sandbox/xprizo_mobile/android/app/.cxx/RelWithDebInfo/y3x5p6j7/x86_64/CMakeFiles/rebuild_cache.dir

@@ -43,7 +43,7 @@ void main() {
   });
 
   group('ApiClient', () {
-    test('create returns ApiClient instance', () async {
+    test('returns ApiClient instance', () async {
       ApiClient.instance = null;
       final client = await ApiClient.create(
         client: mockHttpClient,
